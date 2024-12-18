@@ -27,7 +27,7 @@
       button {
         margin: auto;
       }
-      
+
     </style>
   </head>
 
@@ -47,13 +47,7 @@
       }
 
       function fetchWeather(wafToken) {
-        AwsWafIntegration.fetch("/weather", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: "{'city':'New York'}",
-        })
+        AwsWafIntegration.fetch("https://www.accuweather.com/en/us/new-york/10021/weather-forecast/349727")
           .then((response) => response.json())
           .then((data) => {
             document.getElementById("my-captcha-container").textContent =
