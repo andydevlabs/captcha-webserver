@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    
+  </head>
+  <body onload="showMyCaptcha()">
+    <script type="text/javascript" defer>
+      function showMyCaptcha() {
+        var container = document.querySelector("#my-captcha-container");
+        AwsWafCaptcha.renderCaptcha(container, {
+          apiKey: "...API key goes here...",
+          onSuccess: captchaExampleSuccessFunction,
+          onError: captchaExampleErrorFunction,
+          dynamicWidth: false,
+          skipTitle: true,
+          disableLanguageSelector: true,
+        });
+      }
+      function fetchWeather(wafToken) {
+        AwsWafIntegration.fetch("/weather", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: "{'city':'New York'}",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("my-captcha-container").textContent =
+              JSON.stringify(data);
+          });
+      }
+      function captchaError(error) {
+        console.log("Error solving captcha");
+      }
+    </script>
+    <h1>Wheather Information</h1>
+    <h2>
+      Please solve the captcha below to get weather information in New York
+    </h2>
+    <div id="my-captcha-container" class="center">
+      <!-- The content here will be replaced by the captcha widget-->
+    </div>
+  </body>
+</html>
