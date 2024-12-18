@@ -1,64 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>captcha</title>
-    <script
-      type="text/javascript"
-      src="https://1e3d22915462.us-east-1.captcha-sdk.awswaf.com/1e3d22915462/jsapi.js"
-      defer
-    ></script>
-    <style>
-      h1 {
-        text-align: center;
-      }
-      h2 {
-        text-align: center;
-      }
-      .center {
-        border: 0px solid;
-        margin: auto;
-        width: 30%;
-        padding: 10px;
-        text-align: center;
-        color: blue;
-      }
-      button {
-        margin: auto;
-      }
 
-    </style>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>captcha</title>
+  <script type="text/javascript" src="https://1e3d22915462.us-east-1.captcha-sdk.awswaf.com/1e3d22915462/jsapi.js"
+    defer></script>
+  <style>
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+    h1 {
+      text-align: center;
+    }
 
-  <body>
-    <script type="text/javascript">
-      function showMyCaptcha() {
-        var container = document.querySelector("#my-captcha-container");
-        AwsWafCaptcha.renderCaptcha(container, {
-          apiKey:
-            "mgQ0GliVLDwDR+3ojSE4XtosrEFIR5CUJpTH1VpFhgFI4hq+t7cKtPrEQXniPMcjnKuDqnSB+cs7ZorG5J25JoiMexCJzMiR1RVBRDWD+2B3LG+ndtTygIJOjZ5gRBwjc9ixZpVsxsmCCLInNoiFiWRLQqIEYM4FgBKj3W/IWsgSiMrk1FWAcmHxfEUJXurkNFsRnYp+uGzDmQE5fG/dpY3fb0TRfLNZZ+U+qukGWPC4BzY4FscoPAUPGciSH5OUgZVUiZlkdwBZvBXOoObHDUeTc2eQxRXPz/VjlCu3xjR8ivRIKDwXaCm6MVToIMXlnFzvZxI80p0ydEZ3ATes2ZPwpVdsfL0Wf0n8zmFsmce4+5vLL7Lwr3fz2EUE4HXSG/+M3a+tF6pVQ1POuI2oFHzyPwi/2iGMNgznamfiSM+aIRbD5ksJErE4foQHSAHtCJq2AP9vcxAXuvh/1QLHjkmUc50bwtHcmLxYPSrh4IpRbSDKI+jGVtImHlyt5W14CKEw4KNKMedULI7H8yhaAYn//WN18b0RjdH7SfkfCz9wIW0SsQqAqLwCg2l6wfxsMYPRMYD/SvXdfhoaNM7IWjViNp1tlgTogPzxdaYJPJoOZHNLJntZlvni1Z7Jhi3qVsnh1C7EfJChdbRljhpLHLuogofAWNGxN3Jk7ZuWpDo=_0_1",
-          onSuccess: fetchWeather,
-          onError: captchaError,
-          dynamicWidth: false,
-          skipTitle: true,
-          disableLanguageSelector: true,
-        });
-      }
+    h2 {
+      text-align: center;
+    }
 
-      function fetchWeather(wafToken) {
-        AwsWafIntegration.fetch("https://www.accuweather.com/en/us/new-york/10021/weather-forecast/349727")
-          .then((response) => response.json())
-          .then((data) => {
-            document.getElementById("my-captcha-container").textContent =
-              JSON.stringify(data);
-          });
-      }
+    .center {
+      border: 0px solid;
+      margin: auto;
+      width: 30%;
+      padding: 10px;
+      text-align: center;
+      color: blue;
+    }
 
-      function captchaError(error) {
-        console.log("Error solving captcha");
-      }
-    </script>
+    button {
+      margin: auto;
+      width: 20%;
+    }
+  </style>
+</head>
+
+<body>
+  <script type="text/javascript">
+    function showMyCaptcha() {
+      var container = document.querySelector("#my-captcha-container");
+      AwsWafCaptcha.renderCaptcha(container, {
+        apiKey:
+          "mgQ0GliVLDwDR+3ojSE4XtosrEFIR5CUJpTH1VpFhgFI4hq+t7cKtPrEQXniPMcjnKuDqnSB+cs7ZorG5J25JoiMexCJzMiR1RVBRDWD+2B3LG+ndtTygIJOjZ5gRBwjc9ixZpVsxsmCCLInNoiFiWRLQqIEYM4FgBKj3W/IWsgSiMrk1FWAcmHxfEUJXurkNFsRnYp+uGzDmQE5fG/dpY3fb0TRfLNZZ+U+qukGWPC4BzY4FscoPAUPGciSH5OUgZVUiZlkdwBZvBXOoObHDUeTc2eQxRXPz/VjlCu3xjR8ivRIKDwXaCm6MVToIMXlnFzvZxI80p0ydEZ3ATes2ZPwpVdsfL0Wf0n8zmFsmce4+5vLL7Lwr3fz2EUE4HXSG/+M3a+tF6pVQ1POuI2oFHzyPwi/2iGMNgznamfiSM+aIRbD5ksJErE4foQHSAHtCJq2AP9vcxAXuvh/1QLHjkmUc50bwtHcmLxYPSrh4IpRbSDKI+jGVtImHlyt5W14CKEw4KNKMedULI7H8yhaAYn//WN18b0RjdH7SfkfCz9wIW0SsQqAqLwCg2l6wfxsMYPRMYD/SvXdfhoaNM7IWjViNp1tlgTogPzxdaYJPJoOZHNLJntZlvni1Z7Jhi3qVsnh1C7EfJChdbRljhpLHLuogofAWNGxN3Jk7ZuWpDo=_0_1",
+        onSuccess: goToWeather,
+        onError: captchaError,
+        dynamicWidth: false,
+        skipTitle: true,
+        disableLanguageSelector: true,
+      });
+    }
+
+    function goToWeather(wafToken) {
+      window.location.href =
+        "https://www.accuweather.com/en/us/new-york/10021/weather-forecast/349727";
+    }
+
+    function captchaError(error) {
+      console.log("Error solving captcha");
+    }
+  </script>
+
+  <div class="wrapper">
     <h1>Wheather Information</h1>
     <h2>
       Please solve the captcha below to get weather information in New York
@@ -68,5 +71,7 @@
     </div>
 
     <button onclick="showMyCaptcha()">show my captcha</button>
-  </body>
+  </div>
+</body>
+
 </html>
