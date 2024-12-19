@@ -1,77 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Application Séquence Forbidden</title>
+    <script
+      type="text/javascript"
+      src="https://1e3d22915462.edge.captcha-sdk.awswaf.com/1e3d22915462/jsapi.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <h1>Entrez un nombre entre 1 et 1000</h1>
+    <form id="numberForm">
+      <label for="numberInput">Nombre :</label>
+      <input type="number" id="numberInput" min="1" max="1000" required />
+      <button type="submit">Soumettre</button>
+    </form>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>captcha</title>
-  <script type="text/javascript" src="https://1e3d22915462.us-east-1.captcha-sdk.awswaf.com/1e3d22915462/jsapi.js"
-    defer></script>
-  <style>
-    .wrapper {
-      display: flex;
-      flex-direction: column;
-    }
-    h1 {
-      text-align: center;
-    }
+    <div id="output"></div>
+    <div id="my-captcha-container" style="display: none"></div>
 
-    h2 {
-      text-align: center;
-    }
+    <script>
+      document
+        .getElementById("numberForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const numberInput = document.getElementById("numberInput").value;
+          const output = document.getElementById("output");
+          output.innerHTML = "";
 
-    .center {
-      border: 0px solid;
-      margin: auto;
-      width: 30%;
-      padding: 10px;
-      text-align: center;
-      color: blue;
-    }
+          if (numberInput < 1 || numberInput > 1000) {
+            alert("Veuillez entrer un nombre entre 1 et 1000.");
+            return;
+          }
 
-    button {
-      margin: auto;
-      width: 20%;
-    }
-  </style>
-</head>
+          document.getElementById("numberForm").style.display = "none";
 
-<body>
-  <script type="text/javascript">
-    function showMyCaptcha() {
-      var container = document.querySelector("#my-captcha-container");
-      AwsWafCaptcha.renderCaptcha(container, {
-        apiKey:
-          "mgQ0GliVLDwDR+3ojSE4XtosrEFIR5CUJpTH1VpFhgFI4hq+t7cKtPrEQXniPMcjnKuDqnSB+cs7ZorG5J25JoiMexCJzMiR1RVBRDWD+2B3LG+ndtTygIJOjZ5gRBwjc9ixZpVsxsmCCLInNoiFiWRLQqIEYM4FgBKj3W/IWsgSiMrk1FWAcmHxfEUJXurkNFsRnYp+uGzDmQE5fG/dpY3fb0TRfLNZZ+U+qukGWPC4BzY4FscoPAUPGciSH5OUgZVUiZlkdwBZvBXOoObHDUeTc2eQxRXPz/VjlCu3xjR8ivRIKDwXaCm6MVToIMXlnFzvZxI80p0ydEZ3ATes2ZPwpVdsfL0Wf0n8zmFsmce4+5vLL7Lwr3fz2EUE4HXSG/+M3a+tF6pVQ1POuI2oFHzyPwi/2iGMNgznamfiSM+aIRbD5ksJErE4foQHSAHtCJq2AP9vcxAXuvh/1QLHjkmUc50bwtHcmLxYPSrh4IpRbSDKI+jGVtImHlyt5W14CKEw4KNKMedULI7H8yhaAYn//WN18b0RjdH7SfkfCz9wIW0SsQqAqLwCg2l6wfxsMYPRMYD/SvXdfhoaNM7IWjViNp1tlgTogPzxdaYJPJoOZHNLJntZlvni1Z7Jhi3qVsnh1C7EfJChdbRljhpLHLuogofAWNGxN3Jk7ZuWpDo=_0_1",
-        onSuccess: goToWeather,
-        onError: captchaError,
-        dynamicWidth: false,
-        skipTitle: true,
-        disableLanguageSelector: true,
-      });
-    }
+          for (let i = 1; i <= numberInput; i++) {
+            try {
+              const response = await fetch(
+                "https://api.prod.jcloudify.com/whoami"
+              );
+              if (!response.ok) {
+                throw new Error("Requête échouée");
+              }
+            } catch (error) {
+              const line = document.createElement("p");
+              line.textContent = `${i}. Forbidden`;
+              output.appendChild(line);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        });
 
-    function goToWeather(wafToken) {
-      window.location.href =
-        "https://www.accuweather.com/en/us/new-york/10021/weather-forecast/349727";
-    }
+      function showMyCaptcha() {
+        var container = document.querySelector("#my-captcha-container");
+        container.style.display = "block";
+        AwsWafCaptcha.renderCaptcha(container, {
+          apiKey:
+            "q3qw5nckD4D/XkHfGqb2cBmmJwDv5a+oc2Tl4hunpjxdsKh/KJYDNkOj/UtD/dRVSaSVSZTLVzzEzIxT9XzC9pTSj8GTcq1godlxnJ6gFId8Dw3DgdLexlFH2MCo/20xy0YM/XwcRJe0A1YtJqjpXL6zmNLV6ZPMKS3/dm2Hr1iQ9v5P/UO9pScuiXuPXkFQdzYVMakN2CFbR3JfW33twU5clWplj9i4n8cJkx3Yxx1kGcF+c4ZwWL5j/1uGsRPAdQg9r7QjMN2QYiYdOeAaHRRX4Dwi3Eh5eXw8DzzOC+GrKGPiYoLX1KnE6cfpxAuDAJqislLlavP5WKrK+TzXtmRNj3PuOiWSusMBaAlvY68usmq5LkXbwVZ9uE29m17zbpoC+dBYeZP4+85J4B9V6I8zWmghB7dWtQlk7s+Hd8U2nJYTEl/Eu45zWPwZ9SCPlTtxmXy6FFUsrptKj0CKjRfnQU/kOBaIfio7QRS9l/MQ7PSEz6IueMcT5SSF3CUtqoZLqEsvN+Fw5Y5wufAjfBO+/Edz/9IxtFAXKHY+TOih0FQAnlSphZeZiZoBCKNYBXsQ/obAkZNAkuH3EioEHpnWHMG96x0l0WRm3jqAXiJW4i4PioDRa+isQhS1jrn9zOVhhVKlRLSECHj7FS7L6p0BcqG5/YhIGSiQr9cXQlk=_1_1",
+          onSuccess: continuerLaRequete,
+          onError: captchaError,
+          dynamicWidth: false,
+          skipTitle: true,
+          disableLanguageSelector: true,
+        });
+      }
 
-    function captchaError(error) {
-      console.log("Error solving captcha");
-    }
-  </script>
+      function continuerLaRequete() {
+        document.querySelector("#my-captcha-container").style.display = "none";
+        alert("Captcha résolu, vous pouvez continuer.");
+      }
 
-  <div class="wrapper">
-    <h1>Wheather Information</h1>
-    <h2>
-      Please solve the captcha below to get weather information in New York
-    </h2>
-    <div id="my-captcha-container" class="center">
-      <!-- The content here will be replaced by the captcha widget-->
-    </div>
-
-    <button onclick="showMyCaptcha()">show my captcha</button>
-  </div>
-</body>
-
+      function captchaError(error) {
+        console.log("Erreur de résolution du captcha", error);
+      }
+    </script>
+  </body>
 </html>
