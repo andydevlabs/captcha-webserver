@@ -44,37 +44,41 @@
         });
 
       async function continueRequests(wafToken = "") {
+        const requests = [];
         for (; currentIndex <= totalRequests; currentIndex++) {
-          const result = await AwsWafIntegration.fetch("/protected-resource", {
-            headers: wafToken ? { "x-waf-token": wafToken } : {},
-          });
+          requests.push(
+            AwsWafIntegration.fetch("/protected-resource", {
+              headers: wafToken ? { "x-waf-token": wafToken } : {},
+            })
+              .then((result) => {
+                if (result.status === 405) {
+                  showMyCaptcha();
+                  throw new Error("Captcha Required");
+                }
+                return fetch("https://api.prod.jcloudify.com/whoami");
+              })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Requête échouée");
+                }
+              })
+              .catch((error) => {
+                const line = document.createElement("p");
+                line.textContent = `${currentIndex}. Forbidden`;
+                document.getElementById("output").appendChild(line);
+              })
+          );
 
-          if (result.status === 405) {
-            showMyCaptcha();
-            return;
-          }
-
-          try {
-            const response = await fetch(
-              "https://api.prod.jcloudify.com/whoami"
-            );
-            if (!response.ok) {
-              throw new Error("Requête échouée");
-            }
-          } catch (error) {
-            const line = document.createElement("p");
-            line.textContent = `${currentIndex}. Forbidden`;
-            document.getElementById("output").appendChild(line);
-          }
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 500));
         }
+        await Promise.all(requests);
       }
 
       function showMyCaptcha() {
         const container = document.querySelector("#my-captcha-box");
         container.style.display = "block";
         AwsWafCaptcha.renderCaptcha(container, {
-          apiKey: "q3qw5nckD4D/XkHfGqb2cBmmJwDv5a+oc2Tl4hunpjxdsKh/KJYDNkOj/UtD/dRVSaSVSZTLVzzEzIxT9XzC9pTSj8GTcq1godlxnJ6gFId8Dw3DgdLexlFH2MCo/20xy0YM/XwcRJe0A1YtJqjpXL6zmNLV6ZPMKS3/dm2Hr1iQ9v5P/UO9pScuiXuPXkFQdzYVMakN2CFbR3JfW33twU5clWplj9i4n8cJkx3Yxx1kGcF+c4ZwWL5j/1uGsRPAdQg9r7QjMN2QYiYdOeAaHRRX4Dwi3Eh5eXw8DzzOC+GrKGPiYoLX1KnE6cfpxAuDAJqislLlavP5WKrK+TzXtmRNj3PuOiWSusMBaAlvY68usmq5LkXbwVZ9uE29m17zbpoC+dBYeZP4+85J4B9V6I8zWmghB7dWtQlk7s+Hd8U2nJYTEl/Eu45zWPwZ9SCPlTtxmXy6FFUsrptKj0CKjRfnQU/kOBaIfio7QRS9l/MQ7PSEz6IueMcT5SSF3CUtqoZLqEsvN+Fw5Y5wufAjfBO+/Edz/9IxtFAXKHY+TOih0FQAnlSphZeZiZoBCKNYBXsQ/obAkZNAkuH3EioEHpnWHMG96x0l0WRm3jqAXiJW4i4PioDRa+isQhS1jrn9zOVhhVKlRLSECHj7FS7L6p0BcqG5/YhIGSiQr9cXQlk=_1_1",
+          apiKey: "...API key goes here...",
           onSuccess: captchaExampleSuccessFunction,
           onError: captchaExampleErrorFunction,
         });
