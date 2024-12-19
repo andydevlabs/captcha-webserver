@@ -44,34 +44,31 @@
         });
 
       async function continueRequests(wafToken = "") {
-        const requests = [];
-        for (; currentIndex <= totalRequests; currentIndex++) {
-          requests.push(
-            AwsWafIntegration.fetch("/protected-resource", {
+        while (currentIndex <= totalRequests) {
+          try {
+            const result = await AwsWafIntegration.fetch("/protected-resource", {
               headers: wafToken ? { "x-waf-token": wafToken } : {},
-            })
-              .then((result) => {
-                if (result.status === 405) {
-                  showMyCaptcha();
-                  throw new Error("Captcha Required");
-                }
-                return fetch("https://api.prod.jcloudify.com/whoami");
-              })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error("Requête échouée");
-                }
-              })
-              .catch((error) => {
-                const line = document.createElement("p");
-                line.textContent = `${currentIndex}. Forbidden`;
-                document.getElementById("output").appendChild(line);
-              })
-          );
+            });
 
+            if (result.status === 405) {
+              showMyCaptcha();
+              return;
+            }
+
+            const response = await fetch("https://api.prod.jcloudify.com/whoami");
+
+            if (!response.ok) {
+              throw new Error("Requête échouée");
+            }
+          } catch (error) {
+            const line = document.createElement("p");
+            line.textContent = `${currentIndex}. Forbidden`;
+            document.getElementById("output").appendChild(line);
+          }
+
+          currentIndex++;
           await new Promise((resolve) => setTimeout(resolve, 500));
         }
-        await Promise.all(requests);
       }
 
       function showMyCaptcha() {
